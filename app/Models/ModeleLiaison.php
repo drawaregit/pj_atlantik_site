@@ -17,7 +17,7 @@ class ModeleLiaison extends Model
     public function getLiaisonParSecteur()
     {
         return $this->db->table('liaison li')
-            ->select('se.NOM as NomSecteur, li.NOLIAISON, li.DISTANCE, poDepart.NOM as NomPortDepart, poArrivee.NOM as NomPortArrivee')
+            ->select('se.NOM as NomSecteur, li.NOLIAISON as numeroLiaison, li.DISTANCE, poDepart.NOM as NomPortDepart, poArrivee.NOM as NomPortArrivee')
             ->join('secteur se', 'li.NOSECTEUR = se.NOSECTEUR', 'inner')
             ->join('port poDepart', 'li.NOPORT_DEPART = poDepart.NOPORT', 'inner')
             ->join('port poArrivee', 'li.NOPORT_ARRIVEE = poArrivee.NOPORT', 'inner')
@@ -25,11 +25,23 @@ class ModeleLiaison extends Model
             ->getResult();
     }
 
-    public function getTarifLiaison()
+    public function getLiaisonParSecteurPrecis($nosecteur)
+    {
+        return $this->db->table('liaison li')
+            ->select('se.NOM as NomSecteur, li.NOLIAISON as numeroLiaison, li.DISTANCE, poDepart.NOM as NomPortDepart, poArrivee.NOM as NomPortArrivee')
+            ->join('secteur se', 'li.NOSECTEUR = se.NOSECTEUR', 'inner')
+            ->join('port poDepart', 'li.NOPORT_DEPART = poDepart.NOPORT', 'inner')
+            ->join('port poArrivee', 'li.NOPORT_ARRIVEE = poArrivee.NOPORT', 'inner')
+            ->where(["li.NOSECTEUR" => $nosecteur])
+            ->get()
+            ->getResult();
+    }
+
+    public function getTarifLiaison($noliaison)
     {
         return $this->db->table('liaison li')
             ->distinct()
-            ->select('li.NOLIAISON as numeroLiaison, ca.LETTRECATEGORIE as CATEGORIELETTRE, ca.LIBELLE as CATEGORIELIBELLE, ty.LETTRECATEGORIE as TYPECATEGORIE, ty.NOTYPE as NUMEROTYPE, ty.LIBELLE as CATEGORIELIBELE, pe.DATEDEBUT, pe.DATEFIN, ta.TARIF, poDepart.NOM as NomPortDepart, poArrivee.NOM as NomPortArrivee')
+            ->select('li.NOLIAISON as numeroLiaison, ca.LETTRECATEGORIE as CATEGORIELETTRE, ca.LIBELLE as CATEGORIELIBELLE, ty.LETTRECATEGORIE as TYPECATEGORIE, ty.NOTYPE as NUMEROTYPE, ty.LIBELLE as CATEGORIELIBELE, pe.DATEDEBUT, pe.DATEFIN, ta.TARIF, poDepart.NOM as NomPortDepart, poArrivee.NOM as NomPortArrivee, ta.TARIF as tarif')
             ->join('tarifer ta', 'li.NOLIAISON = ta.NOLIAISON', 'inner')
             ->join('type ty', 'ta.NOTYPE = ty.NOTYPE', 'inner')
             ->join('periode pe', 'ta.NOPERIODE = pe.NOPERIODE', 'inner')
@@ -37,6 +49,7 @@ class ModeleLiaison extends Model
             ->join('port poDepart', 'li.NOPORT_DEPART = poDepart.NOPORT', 'inner')
             ->join('port poArrivee', 'li.NOPORT_ARRIVEE = poArrivee.NOPORT', 'inner')
             ->orderBy('CATEGORIELETTRE', 'ASC')
+            ->where(["li.NOLIAISON" => $noliaison])
             ->get()
             ->getResult();
     }

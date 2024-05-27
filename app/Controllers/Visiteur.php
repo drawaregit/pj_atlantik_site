@@ -5,6 +5,8 @@ use App\Models\ModeleClient;
 use App\Models\ModeleLiaison;
 use App\Models\ModelePeriode;
 use App\Models\ModeleSecteur;
+use App\Models\ModeleTraversee;
+use CodeIgniter\Exceptions\PageNotFoundException;
  //donne accès à la classe ModeleProduit
 
 helper(['url', 'assets', 'form']); // donne accès aux fonctions du helper 'asset'
@@ -237,33 +239,58 @@ class Visiteur extends BaseController
         return redirect()->route('seDeconnecter');
     }
 
-    public function voirHorairesTraversee()
+    public function voirHorairesTraversee($numeroSecteur = null)
     {
         helper(['form','url', 'assets', 'form']);
         $session = session();
         $modelSecteur = new ModeleSecteur();
         $modelLiaison = new ModeleLiaison();
+        $modTraversee = new ModeleTraversee(); // instanciation du modèle
+        
         $data['donneesSecteurs'] = $modelSecteur->getSecteurs();
-        $data['donneesTarifs'] = $modelLiaison->getTarifLiaison(1);
-        $data['TitreDeLaPage'] = 'Tarif Liaisons';
-        return view('Templates/Header')
+
+        if ($numeroSecteur === null)
+        {
+            
+            $data['donneesLiaison'] = $modelLiaison->getLiaisonParSecteur();
+            $data['TitreDeLaPage'] = 'Selectionner secteur';
+            return view('Templates/Header')
             .view('Visiteur/vue_voirHorairesTraversee', $data)
             .view('Templates/Footer');
+        }
+
+        if($this->request->is('post'))
+                {
+                    $data['lesTraversee'] = $modTraversee->getTraverseeParDate($this->request->getPost('liaison'), $this->request->getPost('txtDate'));
+                }
+
+            $data['donneesLiaison'] = $modelLiaison->getLiaisonParSecteurPrecis($numeroSecteur);
+            $data['TitreDeLaPage'] = "Selectionner une liaison et une date.";
+            return view('Templates/Header')
+            .view('Visiteur/vue_voirHorairesTraversee', $data)
+            .view('Templates/Footer');
+        
+            
+
+
+
     }
 
-    public function voirLesTarifLiaison($numeroLiaison = null)
+    public function voirLesTarifLiaison($numeroSecteur = null)
     {
         /* valeur par défaut de referenceProduit = NULL */
         $modLiaison = new ModeleLiaison(); // instanciation du modèle
-        if ($numeroLiaison === null)
+        $modTraversee = new ModeleTraversee(); // instanciation du modèle
+        
+        if ($numeroSecteur === null && !$this->request->is('post'))
             /* pas de reference produit, = NULL -> Tous les produits */ {
-            $data['lesLiaisons'] = $modLiaison->getTarifLiaison();
+            $data['lesLiaisons'] = $modLiaison->getLiaisonParSecteur();
             // findAll : héritée de Model, retourne, ici sous forme d'objets,
             // le résultat de la requête SELECT * FROM produit
             // affectation des objets produits retournés à l'entrée 'lesProduits' du tableau $data
 
-            $data['TitreDeLaPage'] = 'Tous les Liaisons';
-
+            $data['TitreDeLaPage'] = 'Toutes les Liaisons';
+            session()->set('noliaison', $numeroSecteur);
             return view('Templates/Header')
             . view('Visiteur/vue_VoirLiaisons', $data)
             . view('Templates/Footer');
@@ -271,16 +298,22 @@ class Visiteur extends BaseController
         } else
         // une référence produit en entrée : on n'affichera le détail du produit correspondant
         {
-            $data['uneLiaison'] = $modLiaison->find($numeroLiaison);
+            $data['unSecteur'] = $modLiaison->getTarifLiaison($numeroSecteur);
+            
             // find : : héritée de Model, retourne, ici sous forme d'un objet,
             // le résultat de la requête 'SELECT * FROM produit WHERE reference = '.$referenceProduit
             // l'objet produit est affectée à l'entrée 'unProduit' du tableau $data
 
-            if (empty($data['uneLiaison'])) { // pas de produit correspondant à la référence
-                throw\CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            if($this->request->is('post'))
+                {
+                    $data['lesTraversee'] = $modTraversee->getTraverseeParDate($this->request->getPost('liaison'), $this->request->getPost('txtDate'));
+                }
+
+            if (empty($data['unSecteur'])) { // pas de produit correspondant à la référence
+                throw new PageNotFoundException('The page you requested was not found.');
                 // génération d'une exception
             }
-            $data['TitreDeLaPage'] = $data['uneLiaison']->libelle; // ->libelle : $returnType = 'object' !
+            $data['TitreDeLaPage'] = "test"; // ->libelle : $returnType = 'object' !
 
             return view('Templates/Header')
             . view('Visiteur/vue_VoirDetailTarifLiaison', $data)

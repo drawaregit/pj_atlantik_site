@@ -13,7 +13,7 @@
         <?php foreach ($donnees as $ligne): ?>
         <tr>
             <td><?= $ligne->NomSecteur; ?></td>
-            <td><?= $ligne->NOLIAISON; ?></td>
+            <td><?= $ligne->numeroLiaison; ?></td>
             <td><?= $ligne->DISTANCE; ?></td>
             <td><?= $ligne->NomPortDepart; ?></td>
             <td><?= $ligne->NomPortArrivee; ?></td>

@@ -52,10 +52,10 @@
         ?>
       
       <div class="dropdown-menu">
-        <a class="dropdown-item" href=Connexion>Connexion</a>
-        <a class="dropdown-item" href="creationcompte">Créer un compte</a>
-        <a class="dropdown-item" href="seDeconnecter">Se déconnecter</a>
-        <a class="dropdown-item" href="modifiercompte">Modifier Son Compte</a>
+        <a class="dropdown-item" href=/Connexion>Connexion</a>
+        <a class="dropdown-item" href="/creationcompte">Créer un compte</a>
+        <a class="dropdown-item" href="/seDeconnecter">Se déconnecter</a>
+        <a class="dropdown-item" href="/modifiercompte">Modifier Son Compte</a>
       </div>
     </li>
   </ul>

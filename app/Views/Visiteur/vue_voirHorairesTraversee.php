@@ -11,7 +11,7 @@
 <h1>OUI</h1>
 
 <div class="row">
-<div class="col-sm-1">
+<div class="col-sm-2 bg-dark text-white">
 <table style="width:100%">
     <?php foreach ($donneesSecteurs as $ligne): ?>
         <tr >
@@ -20,33 +20,28 @@
     <?php endforeach; ?>
 </table>
 </div>
-<div class="col-sm-11">
+<div class="col-sm-10">
+
 <?php 
-if (empty($_GET)){
-  echo'<p>nan ya pas de get</p>';
-//do something if $_GET is set 
-} else{
-  echo'<p>oui ya un truc</p>';
-//do something if $_GET is NOT set 
-} ?>
-<p>Sélectionner la liaison, et la date souhaitée</p>
-<br>
-<select id="cars" name="liaison">
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="fiat">Fiat</option>
-  <option value="audi">Audi</option>
-</select>
-<select id="cars" name="date">
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="fiat">Fiat</option>
-  <option value="audi">Audi</option>
-</select>
-<button type="button" onclick="alert('Hello World!')">Click Me!</button>
-<br>
-<p>Traversee ici<br>Traversee pour XX/XX/XXXX. Sélectionner la traversée souhaitée. </p>
-</div>
+if ($TitreDeLaPage != "Selectionner secteur") {
+    echo '<p>Sélectionner la liaison, et la date souhaitée</p><br>';
+    echo form_open("voirlesliaisons");
+    echo csrf_field();
+    echo '<select id="liaison" name="liaison">';
+    foreach ($donneesLiaison as $ligne) {
+        echo '<option value="'. $ligne->numeroLiaison .'">' . $ligne->NomPortDepart . ' - ' . $ligne->NomPortArrivee . '</option>';
+    }
+    echo '</select>';
+    echo '<input type="date" id="birthday" name="birthday">';
+    echo form_submit('btnOK','Rechercher');
+    echo form_close();
+    echo '<p>Traversée ici<br>Traversée pour XX/XX/XXXX. Sélectionner la traversée souhaitée. </p>';
+} else {
+    echo '<p>Selectionnez un secteur.</p>';
+}
+?>
+
+
 
 
 </div>

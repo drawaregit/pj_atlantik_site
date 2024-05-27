@@ -8,11 +8,38 @@ $lesProduits : variable récupérée depuis le contrôleur (en 'mode tableau ass
 
  -->
 
-<?php foreach ($lesLiaisons as $uneLiaison) :
+<!--  foreach ($lesLiaisons as $uneLiaison) :
 
-echo '<h3>'.anchor('voirlesliaisons/'.$uneLiaison->NOLIAISON, $uneLiaison->NomPortDepart . ' - ' . $uneLiaison->NomPortArrivee).'</h3>';
+echo '<h3>'.anchor('voirlesliaisons/'.$uneLiaison->numeroLiaison, $uneLiaison->NomPortDepart . ' - ' . $uneLiaison->NomPortArrivee).'</h3>';
 
 
-endforeach ?>
+endforeach ?> -->
 
-<p>Pour afficher le détail d'un produit, cliquer sur son libellé</p>
+<table>
+    <thead>
+        <tr>
+            <th>Secteur</th>
+            <th>Code Liaison</th>
+            <th>Distance en milles marin</th>
+            <th>Port de départ</th>
+            <th>Port d'arrivée</th>
+            <!-- Autres en-têtes de colonnes -->
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($lesLiaisons as $ligne): ?>
+        <tr>
+            <td><?= $ligne->NomSecteur; ?></td>
+            <td><a href="voirlesliaisons/<?= $ligne->numeroLiaison ?>"><?= $ligne->numeroLiaison; ?></a></td>
+            <td><?= $ligne->DISTANCE; ?></td>
+            <td><?= $ligne->NomPortDepart; ?></td>
+            <td><?= $ligne->NomPortArrivee; ?></td>
+            
+            <!-- Autres cellules de données -->
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+
+<p>Pour afficher les Tarifs d'une liaison, cliquer sur son Code!</p>
