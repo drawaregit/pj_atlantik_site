@@ -15,7 +15,10 @@
 <table style="width:100%">
     <?php foreach ($donneesSecteurs as $ligne): ?>
         <tr >
-            <td ><a href="/voirhoraires/<?= $ligne->NOSECTEUR; ?>"><?= $ligne->NOM; ?></a></td>
+        <td>
+    <a href="<?php echo site_url('/voirhoraires/' . $ligne->NOSECTEUR); ?>"><?= $ligne->NOM; ?></a>
+</td>
+
         </tr>
     <?php endforeach; ?>
 </table>
@@ -32,7 +35,7 @@ if ($TitreDeLaPage != "Selectionner secteur") {
         echo '<option value="'. $ligne->numeroLiaison .'">' . $ligne->NomPortDepart . ' - ' . $ligne->NomPortArrivee . '</option>';
     }
     echo '</select>';
-    echo '<input type="date" id="birthday" name="birthday">';
+    echo '<input type="date" id="txtDate" name="date">';
     echo form_submit('btnOK','Rechercher');
     echo form_close();
     echo '<p>Traversée ici<br>Traversée pour XX/XX/XXXX. Sélectionner la traversée souhaitée. </p>';

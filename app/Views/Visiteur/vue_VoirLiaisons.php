@@ -30,7 +30,7 @@ endforeach ?> -->
         <?php foreach ($lesLiaisons as $ligne): ?>
         <tr>
             <td><?= $ligne->NomSecteur; ?></td>
-            <td><a href="voirlesliaisons/<?= $ligne->numeroLiaison ?>"><?= $ligne->numeroLiaison; ?></a></td>
+            <td><a href="<?= base_url('voirlesliaisons/'.$ligne->numeroLiaison) ?>"><?= $ligne->numeroLiaison; ?></a></td>
             <td><?= $ligne->DISTANCE; ?></td>
             <td><?= $ligne->NomPortDepart; ?></td>
             <td><?= $ligne->NomPortArrivee; ?></td>

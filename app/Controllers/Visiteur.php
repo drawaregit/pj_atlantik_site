@@ -6,6 +6,7 @@ use App\Models\ModeleLiaison;
 use App\Models\ModelePeriode;
 use App\Models\ModeleSecteur;
 use App\Models\ModeleTraversee;
+use App\Models\ModeleReservation;
 use CodeIgniter\Exceptions\PageNotFoundException;
  //donne accès à la classe ModeleProduit
 
@@ -32,7 +33,7 @@ class Visiteur extends BaseController
 
         /* VALIDATION DU FORMULAIRE */
         $reglesValidation = [ // Régles de validation
-            'txtMail' => 'required',
+            'txtMail' => 'required|valid_email',
             'txtMotDePasse' => 'required',
         ];
         if (!$this->validate($reglesValidation)) {
@@ -104,18 +105,15 @@ class Visiteur extends BaseController
         /* SI FORMULAIRE NON POSTE, LE CODE QUI SUIT N'EST PAS EXECUTE */
         /* VALIDATION DU FORMULAIRE */
         $reglesValidation = [
-            'txtNom' => 'required',
-            // obligatoire, 3 caractères, exactement
-            'txtPrenom' => 'required',
-            // obligatoire, chaîne de carac. <= 30 carac.
-            'txtAdresse' => 'required',
-            // vide ou numérique
-            'txtCodePostal' => 'required',
-            // vide ou integer
-            'txtVille' => 'required',
-            // vide ou chaîne <= 20 carac
-            'txtMel' => 'required',
-            'txtMDP' => 'required',
+            'txtNom' => 'required',           // obligatoire
+            'txtPrenom' => 'required|alpha',         // obligatoire
+            'txtAdresse' => 'required',                       // obligatoire
+            'txtCodePostal' => 'required|exact_length[5]',    // obligatoire, exactement 5 caractères
+            'txtVille' => 'required|max_length[20]',  
+            'txtNumFixe' => 'required|integer',  
+            'txtNumMobile' => 'required|integer',          // obligatoire, chaîne de caractères <= 20 caractères
+            'txtMel' => 'required|valid_email',               // obligatoire, doit être une adresse email valide
+            'txtMDP' => 'required',                           // obligatoire
         ];
 
         if (!$this->validate($reglesValidation)) {
@@ -198,19 +196,17 @@ class Visiteur extends BaseController
         /* SI FORMULAIRE NON POSTE, LE CODE QUI SUIT N'EST PAS EXECUTE */
         /* VALIDATION DU FORMULAIRE */
         $reglesValidation = [
-            'txtNom' => 'required',
-            // obligatoire, 3 caractères, exactement
-            'txtPrenom' => 'required',
-            // obligatoire, chaîne de carac. <= 30 carac.
-            'txtAdresse' => 'required',
-            // vide ou numérique
-            'txtCodePostal' => 'required',
-            // vide ou integer
-            'txtVille' => 'required',
-            // vide ou chaîne <= 20 carac
-            'txtMel' => 'required',
-            'txtMDP' => 'required',
+            'txtNom' => 'required',           // obligatoire
+            'txtPrenom' => 'required|alpha',         // obligatoire
+            'txtAdresse' => 'required',                       // obligatoire
+            'txtCodePostal' => 'required|exact_length[5]',    // obligatoire, exactement 5 caractères
+            'txtVille' => 'required|max_length[20]',  
+            'txtNumFixe' => 'required|integer',  
+            'txtNumMobile' => 'required|integer',          // obligatoire, chaîne de caractères <= 20 caractères
+            'txtMel' => 'required|valid_email',               // obligatoire, doit être une adresse email valide
+            'txtMDP' => 'required',                           // obligatoire
         ];
+        
 
         if (!$this->validate($reglesValidation)) {
             /* formulaire non validé, on renvoie le formulaire */
@@ -298,19 +294,16 @@ class Visiteur extends BaseController
         } else
         // une référence produit en entrée : on n'affichera le détail du produit correspondant
         {
-            $data['unSecteur'] = $modLiaison->getTarifLiaison($numeroSecteur);
+            $data['uneLiaison'] = $modLiaison->getTarifLiaison($numeroSecteur);
             
             // find : : héritée de Model, retourne, ici sous forme d'un objet,
             // le résultat de la requête 'SELECT * FROM produit WHERE reference = '.$referenceProduit
             // l'objet produit est affectée à l'entrée 'unProduit' du tableau $data
 
-            if($this->request->is('post'))
-                {
-                    $data['lesTraversee'] = $modTraversee->getTraverseeParDate($this->request->getPost('liaison'), $this->request->getPost('txtDate'));
-                }
+            
 
-            if (empty($data['unSecteur'])) { // pas de produit correspondant à la référence
-                throw new PageNotFoundException('The page you requested was not found.');
+            if (empty($data['uneLiaison'])) { // pas de produit correspondant à la référence
+                throw new PageNotFoundException('Aucun tarif n es prochainement disponible pour le moment!');
                 // génération d'une exception
             }
             $data['TitreDeLaPage'] = "test"; // ->libelle : $returnType = 'object' !
@@ -320,4 +313,22 @@ class Visiteur extends BaseController
             . view('Templates/Footer');
         }
     } // Fin voirLesProduits
+
+    public function voirHistoriqueReservation()
+    {
+        helper(['form','url', 'assets', 'form']);
+        $session = session();
+        $model = new ModeleReservation();
+        $data['donnees'] = $model->getReservationsParUtilisateur(session()->get('numero'));
+        $data['TitreDeLaPage'] = 'Historique de Reservations';
+
+        if (empty($data['donnees'])) { // pas de produit correspondant à la référence
+            throw new PageNotFoundException('Vous navez fait aucune reservations!!');
+            // génération d'une exception
+        }
+
+        return view('Templates/Header')
+            .view('Visiteur/vue_voirHistoriqueReservation', $data)
+            .view('Templates/Footer');
+}
 }

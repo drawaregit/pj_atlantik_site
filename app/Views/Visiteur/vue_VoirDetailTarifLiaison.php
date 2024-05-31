@@ -8,7 +8,7 @@ echo '<h2>'.$TitreDeLaPage.'</h2>';
 // OU, sans utiliser le helper assets :
 // echo '<img src="'.base_url().'/assets/images/'.$unProduit->image.'"/>';
 foreach ($uneLiaison as $ligne): ?>
-    <?= $ligne->CATEGORIELETTRE; ?> <?= $ligne->CATEGORIELIBELLE; ?>     <?= $ligne->TYPECATEGORIE; ?><?= $ligne->NUMEROTYPE; ?> - <?= $ligne->CATEGORIELIBELE; ?>     <?= $ligne->DATEDEBUT; ?> / <?= $ligne->DATEFIN; ?> <?= $ligne->tarif; ?>€<br>
+    <?= $ligne->CATEGORIELETTRE; ?> <?= $ligne->CATEGORIELIBELLE; ?>    | <?= $ligne->TYPECATEGORIE; ?> | <?= $ligne->NUMEROTYPE; ?> - <?= $ligne->CATEGORIELIBELE; ?>  |  <?= $ligne->DATEDEBUT; ?> / <?= $ligne->DATEFIN; ?> | <?= $ligne->tarif; ?>€<br>
     <?php endforeach; ?>
     <?php
 

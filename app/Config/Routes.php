@@ -23,7 +23,7 @@ $routes->match(['get', 'post'],'creationcompte', 'Visiteur::AjouterClient');
 $routes->match(['get', 'post'],'ajouterclient', 'Visiteur::AjouterClient');
 $routes->match(['get', 'post'],'voirliaisonsecteur', 'Visiteur::voirLiaisonSecteur');
 $routes->match(['get', 'post'],'voirtarifliaison', 'Visiteur::voirTarifLiaison');
-$routes->match(['get', 'post'],'modifiercompte', 'Visiteur::modifiercompte');
+$routes->match(['get', 'post'],'modifiercompte', 'Visiteur::modifiercompte', ["filter"=> "filtreutilisateur"]);
 $routes->match(['get', 'post'],'voirhoraires', 'Visiteur::voirHorairesTraversee');
 
 $routes->match(['get', 'post'],'voirlesliaisons/(:alphanum)', 'Visiteur::voirLesTarifLiaison/$1');
@@ -31,5 +31,6 @@ $routes->match(['get', 'post'],'voirlesliaisons', 'Visiteur::voirLesTarifLiaison
 
 $routes->match(['get', 'post'], 'voirhoraires/(:alphanum)', 'Visiteur::voirHorairesTraversee/$1');
 $routes->get('accueil', 'Visiteur::accueil');
+$routes->get('reservation','Visiteur::voirHistoriqueReservation');
 $routes->get('seDeconnecter', 'Visiteur::seDeconnecter');
 

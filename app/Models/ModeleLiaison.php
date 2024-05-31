@@ -50,6 +50,7 @@ class ModeleLiaison extends Model
             ->join('port poArrivee', 'li.NOPORT_ARRIVEE = poArrivee.NOPORT', 'inner')
             ->orderBy('CATEGORIELETTRE', 'ASC')
             ->where(["li.NOLIAISON" => $noliaison])
+            ->where(["pe.DATEDEBUT >=" => date("Y-m-d")])
             ->get()
             ->getResult();
     }

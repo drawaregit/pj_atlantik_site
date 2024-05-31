@@ -36,6 +36,10 @@
       <a class="nav-link" href="/voirhoraires">Voir horraires et réserver</a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link" href="/reservation">Voir Votre Historique de reservations</a>
+    </li>
+
     <li class="nav-item dropdown">
         <?php 
         if (!is_null(session()->get('mail'))){
